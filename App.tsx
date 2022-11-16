@@ -2,11 +2,16 @@ import React, {useState} from 'react';
 import {SafeAreaView, View, Button, Text} from 'react-native';
 import {WebView} from 'react-native-webview';
 
-type RTE = 'slate' | 'lexical';
+type RTE = 'slate' | 'lexical' | 'ckeditor';
 
-const RTE_URI: Record<RTE, string> = {
-  slate: 'https://www.slatejs.org/examples/richtext',
-  lexical: 'https://playground.lexical.dev/',
+interface Info {
+  uri: string;
+  title: string;
+}
+const RTE_Info: Record<RTE, Info> = {
+  slate: {title: 'Slate', uri: 'https://www.slatejs.org/examples/richtext'},
+  lexical: {title: 'Lexical', uri: 'https://playground.lexical.dev/'},
+  ckeditor: {title: 'CKEditor', uri: 'https://ckeditor.com/ckeditor-5/demo/'},
 };
 
 const App = () => {
@@ -14,16 +19,15 @@ const App = () => {
   return (
     <SafeAreaView style={{flex: 1}}>
       <View style={{flexDirection: 'row', height: 40}}>
-        <View style={{flex: 1}}>
-          <Button onPress={() => setWhichOne('slate')} title="Slate" />
-        </View>
-        <View style={{flex: 1}}>
-          <Button onPress={() => setWhichOne('lexical')} title="Lexical" />
-        </View>
+        {(Object.entries(RTE_Info) as [RTE, Info][]).map(([rte, info]) => (
+          <View style={{flex: 1}}>
+            <Button onPress={() => setWhichOne(rte)} title={info.title} />
+          </View>
+        ))}
       </View>
       <WebView
         key={whichOne}
-        source={{uri: RTE_URI[whichOne]}}
+        source={{uri: RTE_Info[whichOne].uri}}
         style={{flex: 1}}
       />
     </SafeAreaView>
